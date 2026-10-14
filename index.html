@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111827" />
+  <meta name="description" content="端末内だけで動くシンプルないびきトラッカー" />
+  <title>Snore Tracker</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">LOCAL SLEEP TOOL</p>
+        <h1>Snore Tracker</h1>
+      </div>
+      <div class="status-pill" id="secureStatus">確認中</div>
+    </header>
+
+    <main>
+      <section class="hero card">
+        <div class="hero-copy">
+          <p class="muted">音声は外部へ送信しません。端末上で音量と周波数の特徴から「いびき候補」を推定します。</p>
+          <div class="session-time" id="elapsed">00:00:00</div>
+          <div class="mic-meter" aria-label="マイク入力レベル">
+            <div class="mic-meter-fill" id="meterFill"></div>
+          </div>
+          <div class="live-row">
+            <span id="liveLabel">待機中</span>
+            <span id="liveDb">-- dB</span>
+          </div>
+        </div>
+
+        <div class="hero-actions">
+          <button class="primary big" id="startBtn">測定を開始</button>
+          <button class="danger big hidden" id="stopBtn">測定を終了</button>
+          <button class="ghost" id="testBtn">10秒マイクテスト</button>
+        </div>
+      </section>
+
+      <section class="stats-grid">
+        <article class="stat card">
+          <span>いびき候補</span>
+          <strong id="eventCount">0回</strong>
+          <small>連続音を1イベントとして集計</small>
+        </article>
+        <article class="stat card">
+          <span>いびき推定時間</span>
+          <strong id="snoreDuration">0分</strong>
+          <small id="snoreRate">睡眠時間の 0%</small>
+        </article>
+        <article class="stat card">
+          <span>強いいびき</span>
+          <strong id="strongCount">0回</strong>
+          <small>音量しきい値 +10dB 以上</small>
+        </article>
+      </section>
+
+      <section class="card timeline-card">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">TIMELINE</p>
+            <h2>今夜のタイムライン</h2>
+          </div>
+          <span class="legend"><i class="dot quiet"></i>静か <i class="dot snore"></i>いびき <i class="dot strong"></i>強い</span>
+        </div>
+        <canvas id="timeline" height="150"></canvas>
+        <div class="event-list" id="eventList">
+          <p class="empty">まだイベントはありません。</p>
+        </div>
+      </section>
+
+      <section class="card settings-card">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">SENSITIVITY</p>
+            <h2>検出感度</h2>
+          </div>
+          <span class="value-badge" id="thresholdLabel">-42 dB</span>
+        </div>
+        <label class="range-row">
+          <span>敏感</span>
+          <input type="range" id="threshold" min="-58" max="-28" step="1" value="-42" />
+          <span>鈍感</span>
+        </label>
+        <p class="muted tiny">周囲の環境音が多い場合は右へ。小さないびきも拾いたい場合は左へ。最初は -42 dB 推奨。</p>
+      </section>
+
+      <section class="card history-card">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">HISTORY</p>
+            <h2>過去の測定</h2>
+          </div>
+          <div class="toolbar">
+            <button class="ghost small" id="exportCsvBtn">CSV</button>
+            <button class="ghost small" id="exportJsonBtn">JSON</button>
+            <button class="ghost small" id="clearBtn">履歴削除</button>
+          </div>
+        </div>
+        <div id="historyList" class="history-list"></div>
+      </section>
+
+      <section class="notice card">
+        <strong>このアプリは医療機器ではありません。</strong>
+        <p>いびき候補を簡易推定する個人向けツールです。無呼吸や睡眠障害の診断には使えません。強いいびき、息が止まる、日中の強い眠気などが気になる場合は医療機関へ相談してください。</p>
+      </section>
+    </main>
+
+    <footer>
+      <span>Snore Tracker MVP</span>
+      <span>100% browser / local processing</span>
+    </footer>
+  </div>
+
+  <dialog id="permissionDialog">
+    <h3>マイクを使います</h3>
+    <p>測定中だけマイクを使用します。音声そのものは保存・送信せず、端末内で特徴量だけを計算します。</p>
+    <button class="primary" id="dialogOk">マイクを許可して開始</button>
+    <button class="ghost" id="dialogCancel">キャンセル</button>
+  </dialog>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
