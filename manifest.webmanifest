@@ -1,0 +1,12 @@
+{
+  "name": "Snore Tracker",
+  "short_name": "SnoreTracker",
+  "description": "端末内だけで動くシンプルないびきトラッカー",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#080c14",
+  "theme_color": "#111827",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
